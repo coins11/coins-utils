@@ -1,0 +1,24 @@
+#!/bin/zsh
+
+script=`cat <<EOT
+32! d
+
+32 s/.\(.*\)/\1/g
+:loop
+32 {
+  h
+  s/^[^\t]*>\([^>]*\.coins.tsukuba.ac.jp\)<\/td><td>\(.\{2,4\}\)<\/td>.*$/\1 \2/g
+  /OK/ {
+    s/\(.*\) .*/\1/g
+    p
+  }
+  g
+  s/^[^\t]*\t\(.*\)$/\1/g
+  /\t/ b loop
+}
+
+32 d
+EOT`
+
+curl -s http://www.open.coins.tsukuba.ac.jp/status/coins/ | sed -e $script
+
