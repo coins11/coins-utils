@@ -6,10 +6,8 @@ if [ ! -z $1 ] && [ -f $1 ]; then
     server=`coins-viola`
     dir=`ssh $server "mktemp -d"`
     scp $name_full ${server}:$dir/$name_part
-    ssh $server "gcc -m32 $dir/$name_part /home/prof/taisuke/kikaigo/libkikaigo.a -o $dir/a.out | nkf -w"
-    echo "--------------------"
+    ssh $server "env LANG=C gcc -m32 $dir/$name_part /home/prof/taisuke/kikaigo/libkikaigo.a -o $dir/a.out"
     ssh $server "$dir/a.out"
-    echo "--------------------"
-    ssh $server "rm -rf $dir" | nkf -w
+    ssh $server "env LANG=C rm -rf $dir"
 fi
 
