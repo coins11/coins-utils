@@ -1,0 +1,15 @@
+#!/bin/zsh
+
+if [ ! -z $1 ] && [ -f $1 ]; then
+    name_full=$1
+    name_part=`echo $name_full | sed -e "s/^.*\/\([^\/]*\)$/\1/"`
+    server=`coins-viola`
+    dir=`ssh $server "mktemp -d"`
+    scp $name_full ${server}:$dir/$name_part
+    ssh $server "gcc -m32 $dir/$name_part /home/prof/taisuke/kikaigo/libkikaigo.a -o $dir/a.out | nkf -w"
+    echo "--------------------"
+    ssh $server "$dir/a.out"
+    echo "--------------------"
+    ssh $server "rm -rf $dir" | nkf -w
+fi
+
