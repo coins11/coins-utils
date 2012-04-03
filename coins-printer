@@ -3,7 +3,7 @@
 # -o landscape : 回転
 # -o Duplex=DuplexNoTumble : 両面
 
-export LANG=C
+LANG=C
 
 usage(){
     echo "Usage: $CMDNAME [-o OPTION] [-p PRINTER] file" 1>&2

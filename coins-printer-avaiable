@@ -1,4 +1,2 @@
 #!/bin/zsh
-
 coins-available | grep "^.\{6\}-pr[0-9]"
-
