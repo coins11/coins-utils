@@ -1,13 +1,15 @@
 #!/bin/zsh
-
+LANG=C
+libkikaigo_path=/home/prof/taisuke/kikaigo/libkikaigo.a
 if [ ! -z $1 ] && [ -f $1 ]; then
     name_full=$1
     name_part=`echo $name_full | sed -e "s/^.*\/\([^\/]*\)$/\1/"`
     server=`coins-viola`
-    dir=`ssh $server "mktemp -d"`
-    scp $name_full ${server}:$dir/$name_part
-    ssh $server "env LANG=C gcc -m32 $dir/$name_part /home/prof/taisuke/kikaigo/libkikaigo.a -o $dir/a.out"
-    ssh $server "$dir/a.out"
-    ssh $server "env LANG=C rm -rf $dir"
+    ssh -S ~/.ssh/master-$$ $server -M -f -N 2>/dev/null 1>&2
+    dir=`ssh -S ~/.ssh/master-$$ $server "mktemp -d"`
+    scp -o ControlPath=~/.ssh/master-$$ $name_full ${server}:$dir/$name_part
+    ssh -S ~/.ssh/master-$$ $server "gcc -m32 $dir/$name_part $libkikaigo_path -o $dir/a.out"
+    ssh -S ~/.ssh/master-$$ $server "$dir/a.out"
+    ssh -S ~/.ssh/master-$$ $server "rm -rf $dir"
+    ssh -S ~/.ssh/master-$$ $server -O exit 1>/dev/null 2>/dev/null
 fi
-
